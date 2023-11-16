@@ -1,0 +1,12 @@
+{
+  "name": "backend-tracking-api",
+  "version": "1.0.0",
+  "description": "a restfull api's which is tracking the daily activity for example daily task , status, fitnes, and my weightloss journey and so on.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Ashar",
+  "license": "ISC"
+}
