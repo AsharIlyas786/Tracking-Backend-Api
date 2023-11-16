@@ -1,14 +1,48 @@
+//require('dotenv').config({path:'./env'})
+import dotenv from 'dotenv'
 import express from 'express';
-import http from 'http';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
-import cors from 'cors';
-import mongoose from 'mongoose';
+import connectDB from './db/connect';
 
-const port = 3000;
+
+dotenv.config();
+
+const port = process.env.PORT || 3000;
 const app = express();
 
+connectDB();
+
+
+// IFFI function 
+/*
+( async () => {
+    try {
+       await mongoose.connect(`${process.env.MONGO_URI}/${DB_NAME}`)
+       app.on("error", (error)=>{
+        console.log("ERRR:", error);
+        throw error;
+       })
+
+       app.listen(port, ()=>{
+        console.log(`App is listening on port ${port}`);
+       });
+        
+    } catch (error) {
+        console.error("ERROR: " , error)
+        throw error;
+    }
+
+})()
+
+*/
+
+
+
+
+
+
+
+
+/* 
 app.use(cors({
     credentials : true,
 }));
@@ -27,3 +61,4 @@ server.listen(port, ()=>{
     console.log(`Server is running on port ${port}`)
 });
 
+ */
