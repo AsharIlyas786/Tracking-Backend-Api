@@ -2,14 +2,40 @@
 import dotenv from 'dotenv'
 import express from 'express';
 import connectDB from './db/connect';
-
+import cookieParser from 'cookie-parser';
+import cors from 'cors'
 
 dotenv.config();
 
 const port = process.env.PORT || 3000;
 const app = express();
 
-connectDB();
+app.use(cors({
+   origin: process.env.CORS_ORIGIN, credentials: true 
+}));
+
+app.use(express.json({limit: "16kb"}));
+app.use(express.urlencoded({extended: true , limit: "16kb"}));  // url encode and convert karta hai , because url se data kisi b format m ajata hai . // extended mtlan nested object use karsaktey ho
+app.use(express.static("public"));
+app.use(cookieParser());
+
+
+
+connectDB()
+.then(()=>{
+    app.on("error", (error)=>{
+        console.log("ERRR:", error);
+        throw error;
+       });
+
+    app.listen(port, ()=>{
+        console.log(`App is listening on port ${port}`);
+       });
+})
+.catch((err)=>{
+    console.log("MongoDB connection failed...!!", err);
+    
+})
 
 
 // IFFI function 

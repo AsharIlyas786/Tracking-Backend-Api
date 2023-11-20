@@ -8,7 +8,7 @@ const connectDB =async () => {
         
     } catch (error) {
         console.log("MONGODB connection error", error);
-        process.exit(1) // Node process se exit liya hai isi lize 1 use kiya hai , iske or b method or purpose hai kindly google it
+        process.exit(1) // learned new way to exit from exisitng process , they have multiple exit codes, so kindly google it
     }
 }
 
