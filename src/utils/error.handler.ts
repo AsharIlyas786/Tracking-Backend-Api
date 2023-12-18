@@ -1,18 +1,21 @@
 
-const errorHandlerMiddleware = (err,req,res,next)=>{
+/* const errorHandlerMiddleware = (err,req,res,next)=>{
 
     return res.status(500).json({message: err})
 }
-
-module.exports = errorHandlerMiddleware
-
-
-/*  class errorHandler extends Error{
+ */
+  class errorHandler extends Error{
+    public statusCode: number;
+    public data: null | any;
+    public message: string;
+    public success: boolean;
+    public errors: any[];
+    
     constructor(
-        statusCode,
-        message = "Something went wrong.",
-        error= [],
-        statck= ""
+        statusCode : number,
+        message : string = "Something went wrong.",
+        error : any[] = [],
+        stack : string = ""
     ){
         super(message)
         this.statusCode = statusCode;
@@ -21,13 +24,15 @@ module.exports = errorHandlerMiddleware
         this.success = false;
         this.errors = error;
 
-        if (statck) {
-            this.stack = statck
+        if (stack) {
+            this.stack = stack
             
         }
         else{
-            Error.captureStackTrace(this, this.constructer)
+            Error.captureStackTrace(this, this.constructor)
         }
 
     }
-}  */
+}  
+
+export default errorHandler

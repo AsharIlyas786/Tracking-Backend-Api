@@ -1,10 +1,31 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Document, Types , Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import errorHandler from "../utils/error.handler";
 
-const userSchema = new Schema(
+
+interface UserDocument extends Document{
+  userName: string;
+  email: string;
+  fullName: string;
+  password: string;
+  refreshToken?: string | null;
+  task?: Types.ObjectId;
+  exercise?: Types.ObjectId;
+  weight?: Types.ObjectId;
+
+  isPasswordCorrect(password: string): Promise<boolean>;
+  generateAccessToken(): Promise<string>;
+  generateRefreshToken(): Promise<string>;
+
+
+
+  
+}
+
+const userSchema = new Schema<UserDocument>(
     {
-        username : {
+        userName : {
             type: String,
             required : true,
             unique: true,
@@ -27,24 +48,23 @@ const userSchema = new Schema(
         },      
         password : {
             type: String,
-            required : [true, 'Password is required..!'],
+            required : [true, "Password is required..!"],
         },  
         refreshToken : {
-            type: String,
-            required : true
+            type: String
         },  
         task: {
             type: Schema.Types.ObjectId,
             ref: "task"
         },
-        exercise: {
+         exercise: {
             type: Schema.Types.ObjectId,
             ref: "exercise"
         },
         weight: {
             type: Schema.Types.ObjectId,
             ref: "weight"
-        },
+        }, 
     
     },
     {
@@ -64,35 +84,38 @@ userSchema.pre("save", async function (next : any) { // if we use arrow function
     
 })
 
-userSchema.methods.isPasswordCorrect = async function (password: String) {
+userSchema.methods.isPasswordCorrect = async function (password: string) {
 
   return await bcrypt.compare(password, this.password) // will return true or false
    
 }
 
-userSchema.methods.generateAccessToeken = async function () {
+
+userSchema.methods.generateAccessToken = async function () {
+    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'app-secret';
+
    return await jwt.sign({
         _id : this._id,
         email : this.email,
         username : this.username
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    accessTokenSecret,
     {
-        expiresIn : process.env.ACCESS_TOKEN_EXPIRY
+        expiresIn : process.env.ACCESS_TOKEN_EXPIRY || '1d'
     })
-    
+
 }
 
-userSchema.methods.generateRefreshToeken = async function () {
+userSchema.methods.generateRefreshToken = async function () {
+    const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET || 'app-secret-refresh';
 
     return await jwt.sign({ // refresh roken mei payload kam se kam hota hy , bas _id
         _id : this._id
     },
-    process.env.REFRESH_TOKEN_SECRET,
+    refreshTokenSecret,
     {
-        expiresIn : process.env.REFRESH_TOKEN_EXPIRY
+        expiresIn : process.env.REFRESH_TOKEN_EXPIRY || '10d'
     })
-    
 }
 
-export  const User = mongoose.model("User", userSchema);
+export const Users = mongoose.model<UserDocument>("Users", userSchema);

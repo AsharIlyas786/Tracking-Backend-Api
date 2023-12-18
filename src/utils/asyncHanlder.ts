@@ -1,7 +1,19 @@
-import { NextFunction } from "express"
+import { Request, Response, NextFunction } from 'express';
 
-const asnycHandler = (asnycHandler)=>{
-    return async(req,res,next)=>{
+const asyncHandler = (asyncHandler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            await asyncHandler(req, res, next);
+        } catch (error) {
+            next(error);
+        }
+    };
+};
+
+
+
+/* const asnycHandler = (asnycHandler)=>{
+    return async(req:express.Request, res : express.Response , next : express.NextFunction)=>{
         try {
             await asnycHandler(req,res,next)
         } catch (error) {
@@ -10,7 +22,7 @@ const asnycHandler = (asnycHandler)=>{
 
     }
 
-}
+} */
 
 
 /* const handler = (fn)=>{
@@ -20,4 +32,4 @@ const asnycHandler = (asnycHandler)=>{
     }
 } */
 
-export default asnycHandler;
+export default asyncHandler;
